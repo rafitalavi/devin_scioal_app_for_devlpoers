@@ -637,7 +637,12 @@ img {
 /*=======================
   Login/SignUp
 ========================*/
-
+.login_icon {
+  width: 80px;
+}
+.signup_top {
+  margin-top: 200px;
+}
 .auth {
   width: 100%;
   position: relative;

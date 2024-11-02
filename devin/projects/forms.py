@@ -15,4 +15,4 @@ class ProjectForm(ModelForm):
         super(ProjectForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})  # Set 'input' as a string
-        #self.fileds['title'].widget.attrs.update({'class': 'input'}) sngle way to hnadle
+        #self.fileds['title'].widget.attrs.update({'class': 'input'}) single way to hnadle
