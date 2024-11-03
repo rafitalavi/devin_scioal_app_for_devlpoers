@@ -19,6 +19,17 @@ def createProfile(sender, instance, created, **kwargs):
         print('Profile instance:', profile)  # Debug: Show created profile instance
         print('User instance:', instance)  # Debug: Show user instance
         print("CREATED:", created)
+@receiver(post_save,sender = Profile)
+def updateUser(sender, instance, created, **kwargs):     
+    profile = instance
+    user = profile.user
+    if created == False:
+        user.first_name = profile.name
+        user.username = profile.username
+        user.email = profile.email
+        user.save()
+   
+
 
 @receiver(post_delete, sender=User)  # Delete the Profile when a User is deleted
 def deleteUser(sender, instance, **kwargs):
@@ -40,6 +51,7 @@ def deleteUserFromProfile(sender, instance, **kwargs):
         print('No user found for deleted profile:', instance)  # Debug: Handle case where user does not exist
 
 # Connect the signals
+post_save.connect(updateUser,sender=Profile)
 post_save.connect(createProfile, sender=User)  # Connect to User model
 post_delete.connect(deleteUser, sender=User)  # Connect to User model
 post_delete.connect(deleteUserFromProfile, sender=Profile)  # Connect to Profile model

@@ -3,7 +3,7 @@ import uuid
 from users.models import Profile
 
 class Project(models.Model):
-    owner = models.ForeignKey(Profile, null=True,blank=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(Profile, null=True,blank=True, on_delete=models.SET_NULL)#profile connected to project model
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)  # This means the field can be empty in the database, and null can be submitted
     featured_image = models.ImageField(null=True, blank=True ,default='default.jpg')
@@ -17,7 +17,8 @@ class Project(models.Model):
 
     def __str__(self):
             return self.title ##for showing the string value and project whould be show by name
-
+    class Meta:
+          ordering = ['created']
 ##review table
 class Review(models.Model):
      VOTE_TYPE = (
