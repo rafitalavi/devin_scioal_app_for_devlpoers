@@ -1,7 +1,7 @@
 ﻿# devin_scioal_app_for_devlpoers
 it is protfolio app for devloper where devloper can showcase their projects ,about their skills, they can get review their projects
 # Installation
-* 1 - clone repo https://github.com/divanov11/Django-Course
+* 1 - clone repo https://github.com/rafitalavi/devin_scioal_app_for_devlpoers
 * 2 - create a virtual environment and activate
 *  - pip install virtualenv
 *  - virtualenv envname
