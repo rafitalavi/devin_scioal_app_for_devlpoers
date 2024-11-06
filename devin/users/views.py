@@ -25,7 +25,9 @@ def loginUser(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:  # if user exists and password is correct
             login(request, user)  # login acceptance
-            return redirect('profiles')
+            messages.success(request, 'successfully loged in')
+            next_url = request.GET.get('next', 'account')
+            return redirect(next_url) 
         else:
             messages.error(request,'Username or password is incorrect')#django 
     

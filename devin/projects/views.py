@@ -1,7 +1,8 @@
-from django.shortcuts import render ,redirect
+from django.shortcuts import render ,redirect , get_object_or_404
 from django.http import HttpResponse
 from .models import Project , Tag
-from .forms import ProjectForm 
+from django.contrib import messages
+from .forms import ProjectForm ,reviewForm
 from .utils import SearchProject ,paginationProjects
 from django.db.models import Q #for search by multipl value
 from django.contrib.auth.decorators import login_required
@@ -14,7 +15,7 @@ def projects(request):
     projects, search_query = SearchProject(request)
     
     # Correct unpacking of pagination results
-    custom_range, projects = paginationProjects(request, projects, 6)
+    custom_range, projects = paginationProjects(request, projects, 3)
 
     context = {
         'projects': projects,
@@ -27,14 +28,34 @@ def projects(request):
 
 
 #single project
-def project(request,pk):
+def project(request, pk):
+    # Fetch the project object by ID, raising a 404 error if not found
     projectobj = Project.objects.get(id=pk)
-    # tags = projectobj.tags.all()
+    
+    # Initialize an empty review form
+    form = reviewForm()
 
-    print('projectoobj:',projectobj)
-     # return render(request,'projects/single-project.html',{'project':projectobj ,'tags':tags} )
-    return render(request,'projects/single-project.html',{'project':projectobj } )
+    if request.method == 'POST':
+        # Populate the form with POST data
+        form = reviewForm(request.POST)
+        if form.is_valid():  # Validate the form data
+            # Create a review object but don't save it to the database yet
+            review = form.save(commit=False)
+            # Associate the review with the current project and user
+            review.project = projectobj
+            review.owner = request.user.profile
+            # Save the review to the database
+            review.save()
+            # Redirect to the same project page to prevent duplicate submissions
+            projectobj.getVoteCount
+            messages.success(request, "Your comment is successfully submiitted")
+            return redirect('project', pk=projectobj.id)
 
+    # Render the project details and the review form on the template
+    return render(request, 'projects/single-project.html', {
+        'project': projectobj,
+        'form': form  # Pass the form instance to handle any validation errors
+    })
 
 #create project
 @login_required(login_url="login")
@@ -80,3 +101,5 @@ def deleteproject(request, pk):
 
     context = {'object': project}
     return render(request,"delete_template.html",context)
+
+

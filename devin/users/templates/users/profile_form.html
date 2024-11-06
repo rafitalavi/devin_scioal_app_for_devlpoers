@@ -1,7 +1,14 @@
 {% extends 'main.html' %}
 {% load static %}
 {% block content %}
-
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert--{{ message.tags }}">
+    <P class="alert__message">{{ message }}</P>
+    <button class="alert__close">x</button>
+</div>
+{% endfor %}
+{% endif %}
 <main class="formPage my-xl">
     <div class="content-box">
         <div class="formWrapper">

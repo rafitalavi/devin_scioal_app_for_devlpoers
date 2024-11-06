@@ -1,7 +1,14 @@
 {% extends 'main.html' %}
 {% block content %}
 
-
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert--{{ message.tags }}">
+    <P class="alert__message">{{ message }}</P>
+    <button class="alert__close">x</button>
+</div>
+{% endfor %}
+{% endif %}
 
 
  <!-- Main Section -->
@@ -13,7 +20,7 @@
          </div>
  
          <div class="hero-section__search">
-           <form class="form" action="{% url 'projects' %}" method="get">
+           <form class="form" id="searchForm" action="{% url 'projects' %}" method="get">
              <div class="form__field">
                <label for="formInput#search">Search By Projects </label>
                <input class="input input--text" id="formInput#search" type="text" name="search_query"
