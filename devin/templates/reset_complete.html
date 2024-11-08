@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="reset-password-container">
+    <main class="formPage my-xl">
+        <div class="content-box">
+            <div class="formWrapper">
+                <a class="backButton" href="{% url 'login' %}"><i class="im im-angle-left"></i></a>
+                <br>
+                <h2>Password Reset Complete</h2>
+                <p>Your password has been successfully reset. You can now log in with your new password.</p>
+                <br>
+                <a href="{% url 'login' %}" class="btn btn--sub btn--lg my-md">Back to Login</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

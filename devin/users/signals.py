@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from .models import Profile
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Signal handlers
 @receiver(post_save, sender=User)  # Create a Profile when a new User is created
@@ -14,6 +16,35 @@ def createProfile(sender, instance, created, **kwargs):
             username=instance.username,
             email=instance.email,
             name=instance.first_name,
+        )
+        subject = 'Welcome to DevIn – Where Developers Connect, Learn, and Grow!'
+        message = """
+        Hello {name},
+
+        Welcome to DevIn – we're thrilled to have you join our community of passionate developers!
+
+        At DevIn, we’re dedicated to helping developers like you connect, collaborate, and grow in a supportive environment. Here’s how you can get started:
+
+        1. Complete Your Profile: Add details about your skills, interests, and experiences to connect with like-minded developers.
+        2. Explore and Connect: Browse through our network, follow others, and connect with mentors and peers.
+        3. Join Discussions & Projects: Engage in insightful discussions, contribute to projects, and stay updated with the latest in development.
+        4. Share Your Work: Showcase your projects, write blogs, and share achievements to inspire others and get feedback.
+
+        If you have any questions, feel free to reach out to our support team at support@devin.com.
+
+        Welcome to DevIn, where developers like you are building the future together!
+
+        Happy developing!
+
+        Warm regards,
+        The DevIn Team
+        """
+        send_mail(
+        subject,
+            message.format(name=profile.name),  # Using the profile name for a personal touch
+            settings.EMAIL_HOST_USER,
+            [profile.email],
+            fail_silently=False,
         )
         print('ProfileCreated!') 
         print('Profile instance:', profile)  # Debug: Show created profile instance

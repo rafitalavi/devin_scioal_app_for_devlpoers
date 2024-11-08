@@ -34,3 +34,22 @@ class Skill(models.Model):
     
     def __str__(self):
         return str(self.name)
+#for chat and send messages
+class Messages(models.Model):
+    sender = models.ForeignKey(Profile ,on_delete=models.SET_NULL , null=True , blank=True )#    on_delete=models.SET_NULL if user delted chat will remain like facebook
+    recipient =  models.ForeignKey(Profile ,on_delete=models.SET_NULL , null=True , blank=True ,related_name='message')#    related_name='message' joinig with the profile model
+    name = models.CharField(max_length=200, blank=True, null=True)
+    email = models.EmailField(max_length=200, blank=True, null=True)
+    subject = models.CharField(max_length=200, blank=True, null=True)
+    body = models.TextField()
+    is_read =models.BooleanField(default=False , null = True)
+    created = models.DateField(auto_now_add=True)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    
+    
+    def __str__(self):
+        return self.subject
+    #ordering message
+    class Meta:
+        ordering = ['is_read', 'created']
+  

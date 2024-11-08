@@ -18,11 +18,19 @@
                 <li class="header__menuItem {% if request.path == '/projects/' %}active{% endif %}">
                     <a href="{% url 'projects' %}">Projects</a>
                 </li>
-                <li class="header__menuItem {% if request.path == '/inbox/' %}active{% endif %}">
-                    <a href="#">Inbox</a> <!-- Add URL here -->
-                </li>
+                
 
                 {% if request.user.is_authenticated %}
+                <li class="header__menuItem inboxx {% if request.path == '/inbox/' %}active{% endif %} ">
+                    <a href="{% url 'inbox' %}" class="">Inbox</a> <!-- Add URL here -->
+                    <div class="notification">
+                        
+                         {% if unreadCount > 0 %}
+                                <span class="notification-badge">{{ unreadCount }}</span>
+                            {% endif %}
+                        </a>
+                    </div>
+                </li>
                     <li class="header__menuItem">
                         <a href="{% url 'account' %}">Account</a>
                     </li>

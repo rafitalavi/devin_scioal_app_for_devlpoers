@@ -1,20 +1,20 @@
 from django.shortcuts import render ,redirect
-from .models import Profile ,Skill
+from .models import Profile ,Skill , Messages
 from .utils import SearchProjects , paginationProfiles
 from django.contrib.auth.models import User
 from django.contrib.auth import login , authenticate ,logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm , ProfileForm ,SkillForm
+from .forms import CustomUserCreationForm , ProfileForm ,SkillForm ,MessageForm
 from django.contrib import messages
 from django.db.models import Q #for search by multipl value
-
+from django.contrib.auth.views import PasswordResetCompleteView
 #log in
 def loginUser(request):
     page = 'login'
     if request.user.is_authenticated:#if user is loged in he can't see the log in page
         return redirect('profiles')
     if request.method == 'POST':
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
         try:
             user = User.objects.get(username=username)
@@ -147,6 +147,7 @@ def UpdateSkill(request , pk):
 
     context = {'form':form}
     return render(request, 'users/skill_form.html',context)
+
 #delete
 
 @login_required(login_url="login")
@@ -161,3 +162,54 @@ def deleteSkill(request, pk):
 
     context = {'object': skill}
     return render(request,"delete_template.html",context)
+
+#for inbox
+@login_required(login_url='login')
+def inbox(request):
+    profile = request.user.profile
+    messageRequests = profile.message.all() #related_name = message in the model that conneted it to profile
+    unreadCount = messageRequests.filter(is_read = False).count() #counting unread messsages
+    context ={'messageRequests' : messageRequests , 'unreadCount': unreadCount}
+    return render(request, 'users/inbox.html',context)
+
+#message
+@login_required(login_url='login')
+def veiwMessage(request ,pk):
+    profile = request.user.profile
+    message = profile.message.get(id = pk)
+    if message.is_read == False:
+        message.is_read = True
+        message.save()
+
+    context = {'message' : message}
+    return render(request, 'users/message.html',context)
+#create message
+def createMessage(request,pk):
+
+    recipient = Profile.objects.get(id = pk)
+    form = MessageForm()
+    try : 
+        sender = request.user.profile #if have account
+    except:
+        sender = None # if no account    
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = sender
+            message.recipient = recipient
+
+            if sender: 
+                message.name = sender.name
+                message.email = sender.email #manually handeling
+            message.save()    
+            messages.success(request, "Your message is successfully send")
+            return redirect('user-profile' , pk=recipient.id)
+        
+    context={'recipient':recipient , 'form':form}
+    return render(request,'users/message_form.html',context)
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    def get(self, request, *args, **kwargs):
+        print("Password Reset Complete View Triggered")
+        return super().get(request, *args, **kwargs)

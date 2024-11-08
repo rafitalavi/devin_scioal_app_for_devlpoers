@@ -35,7 +35,9 @@
               <li><a title="Personal Website" href="{{ profile.social_website }}" target="_blank"><i class="fas fa-globe"></i></a></li>
               {% endif %}
             </ul>
-            <a href="#" class="btn btn--sub btn--lg">Send Message</a>
+            {% if request.user.profile.id != profile.id %}
+            <a href="{% url 'create-message' profile.id %}" class="btn btn--sub btn--lg">Send Message</a>
+            {% endif %}
           </div>
         </div>
       </div>

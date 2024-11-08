@@ -1,0 +1,47 @@
+
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert--{{ message.tags }}">
+    <P class="alert__message">{{ message }}</P>
+    <button class="alert__close">x</button>
+</div>
+{% endfor %}
+{% endif %}
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'user-profile' recipient.id %}"><i class="fas fa-angle-left"></i></a>
+            <br>
+
+            <form class="form" method="POST">
+                {% csrf_token %}
+                <!-- Input:Text -->
+                {% if not request.user.is_authenticated %}
+                    <div class="form__field">
+                        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="form__field">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+                {% endif %}
+                <div class="form__field">
+                    <label for="formInput#text">{{form.subject.label}}</label>
+                    {{form.subject}}
+                </div>
+                <div class="form__field">
+                    <label for="formInput#text">{{form.body.label}}</label>
+                    {{form.body}}
+                </div>
+               
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
